@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'current_workspace_id',
     ];
 
     /**
@@ -44,5 +45,27 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function workspaces()
+    {
+        return $this->belongsToMany(Workspace::class, 'workspace_user')
+                    ->withPivot('role_id')
+                    ->withTimestamps();
+    }
+
+    public function currentWorkspace()
+    {
+        return $this->belongsTo(Workspace::class, 'current_workspace_id');
+    }
+
+    // Helper to get role in current workspace
+    public function roleInCurrentWorkspace()
+    {
+        return $this->workspaces()
+                    ->where('workspace_id', $this->current_workspace_id)
+                    ->first()
+                    ?->pivot
+                    ?->role;
     }
 }

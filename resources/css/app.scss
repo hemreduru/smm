@@ -1,14 +1,35 @@
-// CoreUI overrides and variables can go here
-// $primary: #321fdb;
+// Fonts
+@import url('https://fonts.bunny.net/css?family=Nunito');
 
-// Import CoreUI (which includes Bootstrap)
-@import "../../node_modules/@coreui/coreui/scss/style";
+// Bootstrap 5
+// @import "bootstrap/scss/bootstrap"; // Disabled to avoid conflict with Metronic
 
-// Import Toastr
-@import "../../node_modules/toastr/toastr.scss";
-@import "../../node_modules/sweetalert2/src/sweetalert2.scss";
+// Import Toastr & SweetAlert2 - Handled by Metronic plugins.bundle.css
+// @import "toastr/toastr.scss";
+// @import "sweetalert2/src/sweetalert2.scss";
 
 // Custom styles
-body {
-    background-color: #ebedef;
+// body {
+//     background-color: #f8f9fa;
+// }
+
+// Metronic Theme Overrides - Manage Colors Here
+:root {
+    // Primary Color (Base)
+    --kt-primary: #009ef7; // Main brand color
+    --kt-primary-active: #0095e8; // Darker shade for hover/active states
+    --kt-primary-light: #f1faff; // Lighter shade for backgrounds
+
+    // Secondary / Success / Info / Warning / Danger
+    --kt-success: #50cd89;
+    --kt-info: #7239ea;
+    --kt-warning: #ffc700;
+    --kt-danger: #f1416c;
+
+    // Text Colors
+    --kt-text-dark: #181c32;
+    --kt-text-muted: #a1a5b7;
+
+    // Font Family (Optional Override)
+    // --kt-font-family: 'Poppins', Helvetica, sans-serif;
 }

@@ -1,90 +1,92 @@
+@php
+    $userId = auth()->id();
+    $sessionKey = $userId ? "user_{$userId}_settings" : 'guest_settings';
+    $settings = session($sessionKey, ['locale' => config('app.locale'), 'theme' => 'light']);
+    $themeMode = $settings['theme'] ?? 'light';
+    if ($themeMode === 'system')
+        $themeMode = 'light'; // Default for system for now
+@endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="{{ $themeMode }}">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="">
+    <title>{{ config('app.name', 'Laravel') }}</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'SMM Panel') }}</title>
-
-    <!-- Vite Assets -->
+    <link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
+    <!--begin::Fonts-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+    <!--end::Fonts-->
+    <!--begin::Global Stylesheets Bundle(used by all pages)-->
+    @if($themeMode == 'dark')
+        <link href="{{ asset('assets/plugins/global/plugins.dark.bundle.css') }}" rel="stylesheet" type="text/css"
+            id="kt_plugins_bundle" />
+        <link href="{{ asset('assets/css/style.dark.bundle.css') }}" rel="stylesheet" type="text/css"
+            id="kt_style_bundle" />
+    @else
+        <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css"
+            id="kt_plugins_bundle" />
+        <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" id="kt_style_bundle" />
+    @endif
     @vite(['resources/css/app.scss', 'resources/js/app.js'])
+    @stack('styles')
 </head>
+<!--begin::Body-->
 
-<body class="c-app">
-    <!-- Sidebar -->
-    <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
-        <div class="sidebar-brand d-none d-md-flex">
-            <svg class="sidebar-brand-full" width="118" height="46" alt="CoreUI Logo">
-                <use xlink:href="{{ asset('assets/brand/coreui.svg#full') }}"></use>
-            </svg>
-            <svg class="sidebar-brand-narrow" width="46" height="46" alt="CoreUI Logo">
-                <use xlink:href="{{ asset('assets/brand/coreui.svg#signet') }}"></use>
-            </svg>
-        </div>
-        <ul class="sidebar-nav" data-coreui="navigation" data-simplebar="">
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="nav-icon cil-speedometer"></i> Dashboard
-                </a>
-            </li>
-            <!-- Add more menu items here -->
-        </ul>
-        <button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button>
-    </div>
-
-    <!-- Main Content Wrapper -->
-    <div class="wrapper d-flex flex-column min-vh-100 bg-light">
-        <!-- Header -->
-        <header class="header header-sticky mb-4">
-            <div class="container-fluid">
-                <button class="header-toggler px-md-0 me-md-3" type="button"
-                    onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
-                    <i class="icon icon-lg cil-menu"></i>
-                </button>
-                <a class="header-brand d-md-none" href="#">
-                    <svg width="118" height="46" alt="CoreUI Logo">
-                        <use xlink:href="{{ asset('assets/brand/coreui.svg#full') }}"></use>
-                    </svg>
-                </a>
-                <ul class="header-nav d-none d-md-flex">
-                    <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
-                </ul>
-                <ul class="header-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">
-                            <i class="icon icon-lg cil-bell"></i>
-                        </a></li>
-                </ul>
+<body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed aside-enabled aside-fixed">
+    <!--begin::Main-->
+    <!--begin::Root-->
+    <div class="d-flex flex-column flex-root">
+        <!--begin::Page-->
+        <div class="page d-flex flex-row flex-column-fluid">
+            <!--begin::Aside-->
+            @include('layouts.partials.sidebar')
+            <!--end::Aside-->
+            <!--begin::Wrapper-->
+            <div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
+                <!--begin::Header-->
+                @include('layouts.partials.header')
+                <!--end::Header-->
+                <!--begin::Content-->
+                <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+                    <!--begin::Post-->
+                    <div class="post d-flex flex-column-fluid" id="kt_post">
+                        <!--begin::Container-->
+                        <div id="kt_content_container" class="container-fluid">
+                            @yield('content')
+                        </div> <!--end::Container-->
+                    </div>
+                    <!--end::Post-->
+                </div>
+                <!--end::Content-->
+                <!--begin::Footer-->
+                @include('layouts.partials.footer')
+                <!--end::Footer-->
             </div>
-        </header>
-
-        <!-- Main Content -->
-        <div class="body flex-grow-1 px-3">
-            <div class="container-lg">
-                @// Flash Messages via Session for JS handling
-                @if(session('success'))
-                    <script>window.flashSuccess = "{{ session('success') }}";</script>
-                @endif
-                @if(session('error'))
-                    <script>window.flashError = "{{ session('error') }}";</script>
-                @endif
-                @if(session('warning'))
-                    <script>window.flashWarning = "{{ session('warning') }}";</script>
-                @endif
-                @if(session('info'))
-                    <script>window.flashInfo = "{{ session('info') }}";</script>
-                @endif
-
-                @yield('content')
-            </div>
+            <!--end::Wrapper-->
         </div>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div><a href="https://coreui.io">CoreUI</a> © 2024 creativeLabs.</div>
-            <div class="ms-auto">Powered by&nbsp;<a href="https://coreui.io/">CoreUI</a></div>
-        </footer>
+        <!--end::Page-->
     </div>
+    <!--end::Root-->
+    <!--begin::Javascript-->
+    <script>
+        var hostUrl = "assets/";
+        window.flashMessages = {
+            success: "{{ session('success') }}",
+            error: "{{ session('error') }}",
+            warning: "{{ session('warning') }}",
+            info: "{{ session('info') }}"
+    };
+    </script>
+    <!--begin::Global Javascript Bundle(used by all pages)-->
+    <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
+    <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
+    <!--end::Global Javascript Bundle-->
+    @stack('scripts')
+    <!--end::Javascript-->
 </body>
+<!--end::Body-->
 
 </html>

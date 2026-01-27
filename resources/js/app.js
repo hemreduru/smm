@@ -1,61 +1,57 @@
-
 import './bootstrap';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import '@coreui/coreui/dist/js/coreui.bundle.min.js';
 
-// Alert Utilities
-import Swal from 'sweetalert2';
-import toastr from 'toastr';
-
-window.Swal = Swal;
-window.toastr = toastr;
-
-// Configure Toastr
-toastr.options = {
-    "closeButton": true,
-    "progressBar": true,
-    "positionClass": "toast-top-right",
-    "timeOut": "5000",
-};
-
-// Global confirm delete handler for SweetAlert2
+// Flash Message Listener
 document.addEventListener('DOMContentLoaded', () => {
-    // Intercept forms with data-confirm-delete
-    const deleteForms = document.querySelectorAll('form[data-confirm-delete]');
-    deleteForms.forEach(form => {
-        form.addEventListener('submit', function (e) {
+    // Check for global flash messages if set in layout
+    if (window.flashMessages) {
+        if (window.flashMessages.success) toastr.success(window.flashMessages.success);
+        if (window.flashMessages.error) toastr.error(window.flashMessages.error);
+        if (window.flashMessages.warning) toastr.warning(window.flashMessages.warning);
+        if (window.flashMessages.info) toastr.info(window.flashMessages.info);
+    }
+
+    // Theme Mode Switcher (Single Button Toggle & CSS Swap)
+    const themeToggle = document.getElementById('kt_theme_mode_toggle');
+    const pluginsLink = document.getElementById('kt_plugins_bundle');
+    const styleLink = document.getElementById('kt_style_bundle');
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function (e) {
             e.preventDefault();
-            const message = this.getAttribute('data-confirm-message') || 'Are you sure you want to delete this item?';
-            const confirmButtonText = this.getAttribute('data-confirm-text') || 'Yes, delete it!';
+            const currentMode = this.getAttribute('data-kt-value'); // This acts as "next mode"
+            const url = "/theme/" + currentMode;
+            const icon = this.querySelector('i');
 
-            Swal.fire({
-                title: 'Are you sure?',
-                text: message,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: confirmButtonText,
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
+            // 1. Swap Stylesheets
+            if (currentMode === 'dark') {
+                if (pluginsLink) pluginsLink.href = pluginsLink.href.replace('plugins.bundle.css', 'plugins.dark.bundle.css');
+                if (styleLink) styleLink.href = styleLink.href.replace('style.bundle.css', 'style.dark.bundle.css');
+
+                // Update Button State for next click
+                this.setAttribute('data-kt-value', 'light');
+                if (icon) {
+                    icon.classList.remove('bi-moon-fill');
+                    icon.classList.add('bi-brightness-high');
                 }
-            });
-        });
-    });
 
-    // Handle Session Flashes from Backend
-    if (window.flashSuccess) {
-        toastr.success(window.flashSuccess);
-    }
-    if (window.flashError) {
-        toastr.error(window.flashError);
-    }
-    if (window.flashWarning) {
-        toastr.warning(window.flashWarning);
-    }
-    if (window.flashInfo) {
-        toastr.info(window.flashInfo);
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+
+            } else {
+                if (pluginsLink) pluginsLink.href = pluginsLink.href.replace('plugins.dark.bundle.css', 'plugins.bundle.css');
+                if (styleLink) styleLink.href = styleLink.href.replace('style.dark.bundle.css', 'style.bundle.css');
+
+                // Update Button State for next click
+                this.setAttribute('data-kt-value', 'dark');
+                if (icon) {
+                    icon.classList.remove('bi-brightness-high');
+                    icon.classList.add('bi-moon-fill');
+                }
+
+                document.documentElement.setAttribute('data-bs-theme', 'light');
+            }
+
+            // 2. Persist to Backend (No Reload)
+            fetch(url).catch(error => console.error('Error setting theme:', error));
+        });
     }
 });
