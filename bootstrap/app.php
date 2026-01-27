@@ -14,5 +14,26 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (Throwable $e, \Illuminate\Http\Request $request) {
+            // Let Laravel handle authorization/validation exceptions normally
+            if ($e instanceof \Illuminate\Auth\AuthenticationException ||
+                $e instanceof \Illuminate\Validation\ValidationException ||
+                $e instanceof \Illuminate\Auth\Access\AuthorizationException) {
+                return null;
+            }
+
+            $userId = auth()->id() ?? 'guest';
+            \Illuminate\Support\Facades\Log::error("Global Exception: User: {$userId} - " . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // In debug mode, let the developer see the error
+            if (config('app.debug')) {
+               return null;
+            }
+
+            return (new \App\Core\Results\ServerErrorResult(
+                __('messages.server_error')
+            ))->toResponse($request);
+        });
     })->create();
