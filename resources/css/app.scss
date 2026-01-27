@@ -1,0 +1,14 @@
+// CoreUI overrides and variables can go here
+// $primary: #321fdb;
+
+// Import CoreUI (which includes Bootstrap)
+@import "../../node_modules/@coreui/coreui/scss/style";
+
+// Import Toastr
+@import "../../node_modules/toastr/toastr.scss";
+@import "../../node_modules/sweetalert2/src/sweetalert2.scss";
+
+// Custom styles
+body {
+    background-color: #ebedef;
+}
