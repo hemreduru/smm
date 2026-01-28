@@ -14,6 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\SetLocaleAndTheme::class,
         ]);
+
+        $middleware->alias([
+            'workspace.selected' => \App\Http\Middleware\EnsureWorkspaceSelected::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (Throwable $e, \Illuminate\Http\Request $request) {

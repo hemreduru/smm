@@ -22,4 +22,9 @@ class SuccessResult extends BaseResult
         return $redirect->with('success', $this->message)
                         ->with('data', $this->data);
     }
+
+    protected function getType(): string
+    {
+        return 'success';
+    }
 }

@@ -1,0 +1,82 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Core\Repositories;
+
+use App\Models\Workspace;
+use Illuminate\Database\Eloquent\Collection;
+
+class WorkspaceRepository extends BaseRepository
+{
+    public function __construct(Workspace $model)
+    {
+        parent::__construct($model);
+    }
+
+    /**
+     * Get all workspaces for a user.
+     */
+    public function getByUserId(int $userId): Collection
+    {
+        return Workspace::whereHas('users', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->get();
+    }
+
+    /**
+     * Get workspace with users and roles.
+     */
+    public function getWithUsers(int $workspaceId): ?Workspace
+    {
+        return Workspace::with(['users', 'roles', 'owner'])
+            ->find($workspaceId);
+    }
+
+    /**
+     * Check if user is member of workspace.
+     */
+    public function userIsMember(int $workspaceId, int $userId): bool
+    {
+        return Workspace::where('id', $workspaceId)
+            ->whereHas('users', fn($q) => $q->where('user_id', $userId))
+            ->exists();
+    }
+
+    /**
+     * Check if user is owner of workspace.
+     */
+    public function userIsOwner(int $workspaceId, int $userId): bool
+    {
+        return Workspace::where('id', $workspaceId)
+            ->where('owner_id', $userId)
+            ->exists();
+    }
+
+    /**
+     * Add user to workspace with role.
+     */
+    public function addUser(int $workspaceId, int $userId, ?int $roleId = null): void
+    {
+        $workspace = Workspace::findOrFail($workspaceId);
+        $workspace->users()->attach($userId, ['role_id' => $roleId]);
+    }
+
+    /**
+     * Remove user from workspace.
+     */
+    public function removeUser(int $workspaceId, int $userId): void
+    {
+        $workspace = Workspace::findOrFail($workspaceId);
+        $workspace->users()->detach($userId);
+    }
+
+    /**
+     * Update user's role in workspace.
+     */
+    public function updateUserRole(int $workspaceId, int $userId, int $roleId): void
+    {
+        $workspace = Workspace::findOrFail($workspaceId);
+        $workspace->users()->updateExistingPivot($userId, ['role_id' => $roleId]);
+    }
+}

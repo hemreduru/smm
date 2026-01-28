@@ -118,11 +118,24 @@
                         <!--end::Menu separator-->
                         <!--begin::Menu item-->
                         <div class="menu-item px-5">
+                            <a href="{{ route('profile') }}" class="menu-link px-5">
+                                <span class="menu-icon">
+                                    <i class="bi bi-person fs-4"></i>
+                                </span>
+                                <span class="menu-title">{{ __('messages.my_profile') }}</span>
+                            </a>
+                        </div>
+                        <!--end::Menu item-->
+                        <!--begin::Menu separator-->
+                        <div class="separator my-2"></div>
+                        <!--end::Menu separator-->
+                        <!--begin::Menu item-->
+                        <div class="menu-item px-5">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <a href="{{ route('logout') }}"
                                     onclick="event.preventDefault(); this.closest('form').submit();"
-                                    class="menu-link px-5">{{ __('messages.sign_out') }}</a>
+                                    class="menu-link px-5">{{ __('messages.logout') }}</a>
                             </form>
                         </div>
                         <!--end::Menu item-->

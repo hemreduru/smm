@@ -36,4 +36,9 @@ class FailResult extends BaseResult
 
         return $redirect->with('error', $this->message)->withInput();
     }
+
+    protected function getType(): string
+    {
+        return 'fail';
+    }
 }

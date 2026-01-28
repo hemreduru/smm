@@ -78,7 +78,13 @@
             error: "{{ session('error') }}",
             warning: "{{ session('warning') }}",
             info: "{{ session('info') }}"
-    };
+        };
+        window.confirmDefaults = {
+            title: "{{ __('messages.confirm_title') }}",
+            text: "{{ __('messages.confirm_text') }}",
+            confirmButton: "{{ __('messages.confirm_button') }}",
+            cancelButton: "{{ __('messages.cancel_button') }}"
+        };
     </script>
     <!--begin::Global Javascript Bundle(used by all pages)-->
     <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>

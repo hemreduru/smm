@@ -32,4 +32,9 @@ class ServerErrorResult extends BaseResult
         
         return $redirect->with('error', $this->message);
     }
+
+    protected function getType(): string
+    {
+        return 'error';
+    }
 }

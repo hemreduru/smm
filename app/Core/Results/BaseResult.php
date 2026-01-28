@@ -18,6 +18,24 @@ abstract class BaseResult implements Responsable
 
     abstract public function toResponse($request);
 
+    /**
+     * Convert the result to an array for session flash storage.
+     */
+    public function toArray(): array
+    {
+        return [
+            'type' => $this->getType(),
+            'message' => $this->message,
+            'data' => $this->data,
+            'statusCode' => $this->statusCode,
+        ];
+    }
+
+    /**
+     * Get the result type (success, fail, error).
+     */
+    abstract protected function getType(): string;
+
     protected function isJson(Request $request): bool
     {
         return $request->expectsJson();
