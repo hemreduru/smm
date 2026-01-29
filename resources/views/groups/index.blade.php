@@ -41,7 +41,7 @@
             <div class="card-title">
                 <div class="d-flex align-items-center position-relative my-1">
                     <i class="bi bi-search fs-3 position-absolute ms-5"></i>
-                    <input type="text" data-table-filter="search" class="form-control form-control-solid w-250px ps-12" 
+                    <input type="text" data-table-filter="search" class="form-control form-control-solid w-250px ps-12"
                            placeholder="{{ __('messages.search') }}..."/>
                 </div>
             </div>
@@ -76,19 +76,11 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const table = $('#groups-table').DataTable({
-        responsive: true,
-        processing: true,
+    const table = initDataTable('#groups-table', {
         serverSide: false,
         ajax: {
             url: '{{ route('groups.data') }}',
-            dataSrc: 'data',
-            error: function(xhr, error, thrown) {
-                console.error('DataTables error:', error);
-                if (typeof window.showError === 'function') {
-                    window.showError('{{ __('messages.datatable_load_error') }}');
-                }
-            }
+            dataSrc: 'data'
         },
         columns: [
             {
@@ -144,21 +136,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 orderable: false
             }
         ],
-        order: [[0, 'asc']],
-        language: {
-            processing: '<span class="spinner-border spinner-border-sm align-middle"></span> {{ __('messages.loading') }}',
-            emptyTable: '{{ __('messages.no_records_found') }}',
-            zeroRecords: '{{ __('messages.no_matching_records') }}'
-        }
+        order: [[0, 'asc']]
     });
 
     // Search handler
-    const searchInput = document.querySelector('[data-table-filter="search"]');
-    if (searchInput) {
-        searchInput.addEventListener('keyup', function() {
-            table.search(this.value).draw();
-        });
-    }
+    bindSearch(table, '[data-table-filter="search"]');
 });
 </script>
 @endpush

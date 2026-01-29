@@ -23,12 +23,6 @@
             <li class="breadcrumb-item text-muted">{{ $group->name }}</li>
         </ul>
     </div>
-    <div class="d-flex align-items-center gap-2 gap-lg-3">
-        <a href="{{ route('groups.edit', $group) }}" class="btn btn-sm btn-light-primary">
-            <i class="bi bi-pencil me-1"></i>
-            {{ __('messages.edit') }}
-        </a>
-    </div>
 @endsection
 
 @section('content')
@@ -39,7 +33,7 @@
                 <div class="card-header pt-7">
                     <h3 class="card-title">
                         <span class="card-label fw-bold text-gray-900">{{ __('messages.group_accounts') }}</span>
-                        <span class="text-muted ms-2 fs-6">({{ $group->accounts->count() }} accounts)</span>
+                        <span class="text-muted ms-2 fs-6">({{ $group->accounts->count() }} {{ __('messages.accounts') }})</span>
                     </h3>
                 </div>
                 <div class="card-body">
@@ -87,10 +81,10 @@
                     @else
                         <div class="text-center py-15">
                             <i class="bi bi-inbox text-gray-400 fs-3x mb-5"></i>
-                            <div class="text-gray-600 fs-5 fw-semibold mb-3">No accounts in this group</div>
+                            <div class="text-gray-600 fs-5 fw-semibold mb-3">{{ __('messages.no_accounts_in_group') }}</div>
                             <a href="{{ route('groups.edit', $group) }}" class="btn btn-primary">
                                 <i class="bi bi-plus-lg me-1"></i>
-                                Add Accounts
+                                {{ __('messages.add_accounts') }}
                             </a>
                         </div>
                     @endif
@@ -115,14 +109,14 @@
                         <div class="d-flex flex-column">
                             <span class="fw-bold text-gray-800 fs-4">{{ $group->name }}</span>
                             <span class="badge {{ $group->is_active ? 'badge-light-success' : 'badge-light-secondary' }}">
-                                {{ $group->is_active ? 'Active' : 'Inactive' }}
+                                {{ $group->is_active ? __('messages.active') : __('messages.inactive') }}
                             </span>
                         </div>
                     </div>
                     @if($group->description)
                         <p class="text-gray-600 mb-0">{{ $group->description }}</p>
                     @else
-                        <p class="text-gray-400 fst-italic mb-0">No description</p>
+                        <p class="text-gray-400 fst-italic mb-0">{{ __('messages.no_description') }}</p>
                     @endif
                 </div>
             </div>

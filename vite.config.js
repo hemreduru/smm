@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import tailwindcss from '@tailwindcss/vite';
+// Tailwind disabled - Metronic has its own CSS framework
+// import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
     plugins: [
@@ -11,7 +12,7 @@ export default defineConfig({
             ],
             refresh: true,
         }),
-        tailwindcss(),
+        // tailwindcss(), // Disabled to prevent CSS conflicts with Metronic
     ],
     resolve: { // Needed for Bootstrap/CoreUI
         alias: {

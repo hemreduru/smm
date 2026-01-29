@@ -37,7 +37,7 @@
             <!--begin::Menu-->
             <div class="menu menu-column menu-title-gray-800 menu-state-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500"
                 id="#kt_aside_menu" data-kt-menu="true" data-kt-menu-expand="false">
-                
+
                 {{-- Dashboard --}}
                 <div class="menu-item">
                     <a class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
@@ -133,6 +133,30 @@
                             </span>
                         </span>
                         <span class="menu-title">{{ __('messages.account_groups') }}</span>
+                    </a>
+                </div>
+
+                {{-- Content Management Section Separator --}}
+                <div class="menu-item">
+                    <div class="menu-content pt-8 pb-2">
+                        <span class="menu-section text-muted text-uppercase fs-8 ls-1">{{ __('messages.content_management') ?? 'Content Management' }}</span>
+                    </div>
+                </div>
+
+                {{-- Contents --}}
+                <div class="menu-item">
+                    <a class="menu-link {{ request()->routeIs('contents.*') ? 'active' : '' }}"
+                        href="{{ route('contents.index') }}">
+                        <span class="menu-icon">
+                            <span class="svg-icon svg-icon-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path opacity="0.3" d="M5 16C3.3 16 2 14.7 2 13C2 11.3 3.3 10 5 10H5.1C5 9.7 5 9.3 5 9C5 6.2 7.2 4 10 4C11.9 4 13.5 5 14.3 6.5C14.8 6.2 15.4 6 16 6C17.7 6 19 7.3 19 9C19 9.4 18.9 9.7 18.8 10C18.9 10 18.9 10 19 10C20.7 10 22 11.3 22 13C22 14.7 20.7 16 19 16H5Z" fill="currentColor"/>
+                                    <path d="M9 18.5L12 21.5L15 18.5H9Z" fill="currentColor"/>
+                                    <path d="M11 13V20.5C11 21.1 11.4 21.5 12 21.5C12.6 21.5 13 21.1 13 20.5V13C13 12.4 12.6 12 12 12C11.4 12 11 12.4 11 13Z" fill="currentColor"/>
+                                </svg>
+                            </span>
+                        </span>
+                        <span class="menu-title">{{ __('messages.contents') }}</span>
                     </a>
                 </div>
 

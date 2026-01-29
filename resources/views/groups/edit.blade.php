@@ -63,7 +63,7 @@
                         <input class="form-check-input" type="checkbox" name="is_active" value="1"
                                {{ old('is_active', $group->is_active) ? 'checked' : '' }}/>
                         <span class="form-check-label fw-semibold text-gray-700">
-                            Active
+                            {{ __('messages.active') }}
                         </span>
                     </label>
                 </div>

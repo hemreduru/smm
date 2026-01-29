@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="card-body pt-5">
-                        <a href="{{ route('accounts.create', ['platform' => $platform->value]) }}" 
+                        <a href="{{ route('accounts.create', ['platform' => $platform->value]) }}"
                            class="btn btn-sm btn-light-primary w-100">
                             <i class="bi bi-plus-lg"></i>
                             {{ __('messages.connect_account') }}
@@ -55,7 +55,7 @@
             <div class="card-title">
                 <div class="d-flex align-items-center position-relative my-1">
                     <i class="bi bi-search fs-3 position-absolute ms-5"></i>
-                    <input type="text" data-table-filter="search" class="form-control form-control-solid w-250px ps-12" 
+                    <input type="text" data-table-filter="search" class="form-control form-control-solid w-250px ps-12"
                            placeholder="{{ __('messages.search') }}..."/>
                 </div>
             </div>
@@ -101,19 +101,11 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const table = $('#accounts-table').DataTable({
-        responsive: true,
-        processing: true,
+    const table = initDataTable('#accounts-table', {
         serverSide: false,
         ajax: {
             url: '{{ route('accounts.data') }}',
-            dataSrc: 'data',
-            error: function(xhr, error, thrown) {
-                console.error('DataTables error:', error);
-                if (typeof window.showError === 'function') {
-                    window.showError('{{ __('messages.datatable_load_error') }}');
-                }
-            }
+            dataSrc: 'data'
         },
         columns: [
             {
@@ -141,8 +133,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 render: function(data) {
                     return `<div class="d-flex align-items-center">
                         <div class="symbol symbol-circle symbol-40px overflow-hidden me-3">
-                            ${data.profile_picture_url 
-                                ? `<img src="${data.profile_picture_url}" alt="${data.username}" class="w-100"/>` 
+                            ${data.profile_picture_url
+                                ? `<img src="${data.profile_picture_url}" alt="${data.username}" class="w-100"/>`
                                 : `<div class="symbol-label fs-6 bg-light-primary text-primary fw-bold">${data.username.charAt(0).toUpperCase()}</div>`
                             }
                         </div>
@@ -156,8 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
             {
                 data: null,
                 render: function(data) {
-                    const healthIcon = data.is_healthy 
-                        ? '<i class="bi bi-check-circle text-success me-1"></i>' 
+                    const healthIcon = data.is_healthy
+                        ? '<i class="bi bi-check-circle text-success me-1"></i>'
                         : '<i class="bi bi-exclamation-circle text-warning me-1"></i>';
                     return `<span class="badge ${data.status_badge}">${healthIcon}${data.status_label}</span>`;
                 }
@@ -173,21 +165,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 orderable: false
             }
         ],
-        order: [[1, 'asc']],
-        language: {
-            processing: '<span class="spinner-border spinner-border-sm align-middle"></span> {{ __('messages.loading') }}',
-            emptyTable: '{{ __('messages.no_records_found') }}',
-            zeroRecords: '{{ __('messages.no_matching_records') }}'
-        }
+        order: [[1, 'asc']]
     });
 
     // Search handler
-    const searchInput = document.querySelector('[data-table-filter="search"]');
-    if (searchInput) {
-        searchInput.addEventListener('keyup', function() {
-            table.search(this.value).draw();
-        });
-    }
+    bindSearch(table, '[data-table-filter="search"]');
 });
 </script>
 @endpush

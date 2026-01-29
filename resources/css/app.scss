@@ -1,5 +1,5 @@
-// Fonts
-@import url('https://fonts.bunny.net/css?family=Nunito');
+// Fonts - Using local Poppins font (see public/assets/css/fonts.css)
+// Do not import external fonts here to avoid FOUC
 
 // Bootstrap 5
 // @import "bootstrap/scss/bootstrap"; // Disabled to avoid conflict with Metronic

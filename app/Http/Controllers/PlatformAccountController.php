@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Controllers;
 
 use App\Core\Services\PlatformAccountService;
@@ -51,6 +49,9 @@ class PlatformAccountController extends Controller
             ->addColumn('status_label', fn($account) => $account->status->label())
             ->addColumn('status_badge', fn($account) => $account->status->badgeClass())
             ->addColumn('is_healthy', fn($account) => $account->isHealthy())
+            ->editColumn('last_synced_at', function ($account) {
+                return $account->last_synced_at ? $account->last_synced_at->toISOString() : null;
+            })
             ->addColumn('actions', function ($account) {
                 return view('accounts.partials.actions', compact('account'))->render();
             })

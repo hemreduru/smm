@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Controllers;
 
 use App\Core\Services\UserService;
@@ -46,9 +44,15 @@ class UserController extends Controller
             ->addColumn('is_owner', function ($user) use ($workspaceId) {
                 return $this->userService->isWorkspaceOwner($user, $workspaceId);
             })
+            ->addColumn('status', function ($user) {
+                return $user->email_verified_at ? 'verified' : 'pending';
+            })
+            ->editColumn('created_at', function ($user) {
+                return $user->created_at ? $user->created_at->format('d M Y') : '-';
+            })
             ->addColumn('actions', function ($user) use ($currentUserId, $workspaceId) {
                 $isCurrentUser = $user->id === $currentUserId;
-                
+
                 return view('users.partials.actions', [
                     'user' => $user,
                     'workspaceId' => $workspaceId,

@@ -10,6 +10,7 @@ use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PlatformAccountController;
 use App\Http\Controllers\AccountGroupController;
+use App\Http\Controllers\ContentController;
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -52,7 +53,7 @@ Route::middleware('auth')->group(function () {
 
     // Workspaces - Resource routes
     Route::resource('workspaces', WorkspaceController::class);
-    
+
     // Workspace extra actions (not covered by resource)
     Route::prefix('workspaces/{workspace}')->name('workspaces.')->group(function () {
         Route::post('switch', [WorkspaceController::class, 'switch'])->name('switch');
@@ -73,6 +74,13 @@ Route::middleware('auth')->group(function () {
         // Account Groups
         Route::resource('groups', AccountGroupController::class);
         Route::get('groups-data', [AccountGroupController::class, 'data'])->name('groups.data');
+
+        // Contents
+        Route::resource('contents', ContentController::class);
+        Route::get('contents-data', [ContentController::class, 'data'])->name('contents.data');
+        Route::get('contents-kanban', [ContentController::class, 'kanban'])->name('contents.kanban');
+        Route::post('contents/{content}/approve', [ContentController::class, 'approve'])->name('contents.approve');
+        Route::post('contents/{content}/schedule', [ContentController::class, 'schedule'])->name('contents.schedule');
     });
 
     // User Profile

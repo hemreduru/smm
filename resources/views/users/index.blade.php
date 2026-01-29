@@ -55,7 +55,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 {{-- Invite Button --}}
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inviteUserModal">
                     <i class="bi bi-person-plus me-2"></i>{{ __('messages.invite_user') }}
@@ -122,31 +122,23 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    let table = $('#users-table').DataTable({
-        responsive: true,
-        processing: true,
+document.addEventListener('DOMContentLoaded', function() {
+    const table = initDataTable('#users-table', {
         serverSide: true,
         ajax: {
             url: '{{ route("users.data") }}',
             data: function(d) {
                 d.role_id = $('#role-filter').val();
-            },
-            error: function(xhr, error, thrown) {
-                console.error('DataTables error:', error);
-                if (typeof window.showError === 'function') {
-                    window.showError('{{ __('messages.datatable_load_error') }}');
-                }
             }
         },
         columns: [
-            { 
-                data: 'name', 
+            {
+                data: 'name',
                 name: 'name',
                 render: function(data, type, row) {
                     let avatarColor = row.is_owner ? 'warning' : 'primary';
                     let ownerBadge = row.is_owner ? '<span class="badge badge-light-warning ms-2"><i class="bi bi-star-fill text-warning me-1"></i>{{ __("messages.owner") }}</span>' : '';
-                    
+
                     return `<div class="d-flex align-items-center">
                         <div class="symbol symbol-45px me-4">
                             <span class="symbol-label bg-light-${avatarColor} text-${avatarColor} fs-5 fw-bold">
@@ -161,10 +153,10 @@ $(document).ready(function() {
                     </div>`;
                 }
             },
-            { 
-                data: 'role', 
-                name: 'role', 
-                orderable: false, 
+            {
+                data: 'role',
+                name: 'role',
+                orderable: false,
                 searchable: false,
                 render: function(data, type, row) {
                     let roleColors = {'Admin': 'primary', 'Editor': 'warning', 'Viewer': 'info'};
@@ -185,40 +177,30 @@ $(document).ready(function() {
                     }
                 }
             },
-            { 
-                data: 'created_at', 
+            {
+                data: 'created_at',
                 name: 'created_at',
                 render: function(data, type, row) {
                     return `<span class="text-gray-600 fs-7">${data}</span>`;
                 }
             },
-            { 
-                data: 'actions', 
-                name: 'actions', 
-                orderable: false, 
+            {
+                data: 'actions',
+                name: 'actions',
+                orderable: false,
                 searchable: false,
                 className: 'text-end pe-4'
             }
         ],
-        language: {
-            url: '{{ app()->getLocale() === "tr" ? "//cdn.datatables.net/plug-ins/1.13.7/i18n/tr.json" : "" }}',
-            emptyTable: '{{ __('messages.no_records_found') }}',
-            zeroRecords: '{{ __('messages.no_matching_records') }}'
-        },
         dom: 'rt<"row align-items-center"<"col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start"li><"col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end"p>>',
-        pageLength: 10,
         order: [[3, 'desc']]
     });
 
     // Search handler
-    $('[data-kt-user-table-filter="search"]').on('keyup', function() {
-        table.search(this.value).draw();
-    });
+    bindSearch(table, '[data-kt-user-table-filter="search"]');
 
     // Filter handler
-    $('#apply-filter').on('click', function() {
-        table.ajax.reload();
-    });
+    bindFilterButton(table, '#apply-filter');
 });
 </script>
 @endpush

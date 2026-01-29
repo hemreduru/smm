@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Controllers;
 
 use App\Core\Services\AccountGroupService;
@@ -50,6 +48,9 @@ class AccountGroupController extends Controller
                 return $group->accounts->pluck('platform')->unique()->values();
             })
             ->addColumn('status', fn($group) => $group->is_active)
+            ->editColumn('created_at', function ($group) {
+                return $group->created_at ? $group->created_at->toISOString() : null;
+            })
             ->addColumn('actions', function ($group) {
                 return view('groups.partials.actions', compact('group'))->render();
             })

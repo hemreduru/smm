@@ -16,21 +16,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
-    <!--begin::Fonts-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+
+    <!--begin::Fonts (Local)-->
+    <link href="{{ asset('assets/css/fonts.css') }}" rel="stylesheet" type="text/css" />
     <!--end::Fonts-->
+
     <!--begin::Global Stylesheets Bundle(used by all pages)-->
     @if($themeMode == 'dark')
-        <link href="{{ asset('assets/plugins/global/plugins.dark.bundle.css') }}" rel="stylesheet" type="text/css"
-            id="kt_plugins_bundle" />
-        <link href="{{ asset('assets/css/style.dark.bundle.css') }}" rel="stylesheet" type="text/css"
-            id="kt_style_bundle" />
+        <link href="{{ asset('assets/plugins/global/plugins.dark.bundle.css') }}" rel="stylesheet" type="text/css" id="kt_plugins_bundle" />
+        <link href="{{ asset('assets/plugins/custom/datatables/datatables.dark.bundle.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/css/style.dark.bundle.css') }}" rel="stylesheet" type="text/css" id="kt_style_bundle" />
     @else
-        <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css"
-            id="kt_plugins_bundle" />
+        <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" id="kt_plugins_bundle" />
+        <link href="{{ asset('assets/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" id="kt_style_bundle" />
     @endif
+    <!--end::Global Stylesheets Bundle-->
+
+    <!--begin::Vite (Custom overrides - loads last to allow overriding)-->
     @vite(['resources/css/app.scss', 'resources/js/app.js'])
+    <!--end::Vite-->
+
     @stack('styles')
 </head>
 <!--begin::Body-->
@@ -88,6 +94,7 @@
     </script>
     <!--begin::Global Javascript Bundle(used by all pages)-->
     <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
+    <script src="{{ asset('assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
     <!--end::Global Javascript Bundle-->
     @stack('scripts')
