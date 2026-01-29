@@ -11,6 +11,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PlatformAccountController;
 use App\Http\Controllers\AccountGroupController;
 use App\Http\Controllers\ContentController;
+use App\Http\Controllers\TopicController;
+use App\Http\Controllers\WebhookController;
 
 Route::get('/', fn() => redirect()->route('login'));
 
@@ -81,9 +83,24 @@ Route::middleware('auth')->group(function () {
         Route::get('contents-kanban', [ContentController::class, 'kanban'])->name('contents.kanban');
         Route::post('contents/{content}/approve', [ContentController::class, 'approve'])->name('contents.approve');
         Route::post('contents/{content}/schedule', [ContentController::class, 'schedule'])->name('contents.schedule');
+
+        // Topics
+        Route::resource('topics', TopicController::class);
+        Route::get('topics-data', [TopicController::class, 'data'])->name('topics.data');
+        Route::get('topics/ai/providers', [TopicController::class, 'providers'])->name('topics.providers');
+        Route::post('topics/ai/generate', [TopicController::class, 'generate'])->name('topics.generate');
+        Route::post('topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
+        Route::post('topics/{topic}/send', [TopicController::class, 'sendToN8n'])->name('topics.send');
+        Route::post('topics/{topic}/reset', [TopicController::class, 'resetToDraft'])->name('topics.reset');
     });
 
     // User Profile
     Route::get('profile', [UserController::class, 'profile'])->name('profile');
     Route::put('profile', [UserController::class, 'updateProfile'])->name('profile.update');
+});
+
+// Webhook Routes (No Auth - but verified by API key)
+Route::prefix('webhooks')->name('webhooks.')->group(function () {
+    Route::post('n8n/callback', [WebhookController::class, 'n8nCallback'])->name('n8n.callback');
+    Route::get('n8n/health', [WebhookController::class, 'n8nHealth'])->name('n8n.health');
 });

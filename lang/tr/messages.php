@@ -297,4 +297,131 @@ return [
 
     // Content Management Section
     'content_management' => 'İçerik Yönetimi',
+
+    // Topics
+    'topics' => [
+        'title' => 'Konular',
+        'subtitle' => 'AI ile oluşturulan konuları yönetin ve işlenmek üzere n8n\'e gönderin.',
+        'create' => 'Konu Oluştur',
+        'edit' => 'Konuyu Düzenle',
+        'view' => 'Konuyu Görüntüle',
+        'delete' => 'Konuyu Sil',
+        'generate' => 'AI ile Oluştur',
+        'generate_topics' => 'Konu Oluştur',
+        'manual_create' => 'Manuel Oluştur',
+
+        // Fields
+        'fields' => [
+            'title' => 'Başlık',
+            'description' => 'Açıklama',
+            'niche' => 'Niş',
+            'keywords' => 'Anahtar Kelimeler',
+            'status' => 'Durum',
+            'ai_provider' => 'AI Sağlayıcı',
+            'ai_model' => 'AI Modeli',
+            'scheduled_at' => 'Planlanan Zaman',
+            'created_by' => 'Oluşturan',
+            'sent_at' => 'Gönderilme Zamanı',
+            'completed_at' => 'Tamamlanma Zamanı',
+        ],
+
+        // Placeholders
+        'placeholders' => [
+            'title' => 'Konu başlığını girin',
+            'description' => 'Konu açıklamasını girin',
+            'niche' => 'ör: fitness, teknoloji, yemek',
+            'keywords' => 'Anahtar kelimeleri virgülle ayırarak girin',
+            'select_provider' => 'AI Sağlayıcı Seçin',
+            'select_model' => 'AI Modeli Seçin',
+        ],
+
+        // Actions
+        'approve' => 'Onayla',
+        'send_to_n8n' => 'n8n\'e Gönder',
+        'reset_to_draft' => 'Taslağa Döndür',
+        'retry' => 'Tekrar Dene',
+
+        // Statuses
+        'statuses' => [
+            'draft' => 'Taslak',
+            'approved' => 'Onaylandı',
+            'sent_to_n8n' => 'n8n\'e Gönderildi',
+            'processing' => 'İşleniyor',
+            'completed' => 'Tamamlandı',
+            'failed' => 'Başarısız',
+        ],
+
+        // Messages
+        'list_success' => 'Konular başarıyla alındı.',
+        'list_error' => 'Konular alınamadı.',
+        'not_found' => 'Konu bulunamadı.',
+        'found' => 'Konu bulundu.',
+        'find_error' => 'Konu bulunamadı.',
+        'created' => 'Konu başarıyla oluşturuldu.',
+        'create_error' => 'Konu oluşturulamadı.',
+        'updated' => 'Konu başarıyla güncellendi.',
+        'update_error' => 'Konu güncellenemedi.',
+        'deleted' => 'Konu başarıyla silindi.',
+        'delete_error' => 'Konu silinemedi.',
+        'approved' => 'Konu başarıyla onaylandı.',
+        'approve_error' => 'Konu onaylanamadı.',
+        'sent_to_n8n' => 'Konu başarıyla n8n\'e gönderildi.',
+        'send_error' => 'Konu gönderilemedi.',
+        'reset' => 'Konu başarıyla taslağa döndürüldü.',
+        'reset_error' => 'Konu taslağa döndürülemedi.',
+
+        // Restrictions
+        'cannot_edit' => 'Bu konu düzenlenemez.',
+        'cannot_delete' => 'Bu konu silinemez.',
+        'cannot_approve' => 'Bu konu onaylanamaz.',
+        'cannot_send' => 'Bu konu n8n\'e gönderilemez.',
+        'cannot_reset' => 'Bu konu sıfırlanamaz.',
+
+        // AI
+        'ai_generation_failed' => 'AI konu üretimi başarısız oldu: :error',
+        'ai_generation_error' => 'AI konu üretimi sırasında bir hata oluştu.',
+        'ai_generated' => ':count konu başarıyla oluşturuldu.',
+        'n8n_send_failed' => 'n8n\'e gönderilemedi: :error',
+
+        // Validation
+        'validation' => [
+            'niche_required' => 'AI üretimi için niş gereklidir.',
+            'max_keywords' => 'En fazla 10 anahtar kelime kullanılabilir.',
+            'invalid_provider' => 'Geçersiz AI sağlayıcı seçildi.',
+        ],
+
+        // Stats
+        'stats' => [
+            'total' => 'Toplam Konu',
+            'draft' => 'Taslaklar',
+            'approved' => 'Onaylananlar',
+            'pending' => 'Bekleyenler',
+            'completed' => 'Tamamlananlar',
+            'failed' => 'Başarısızlar',
+        ],
+
+        // Empty State
+        'no_topics' => 'Konu bulunamadı.',
+        'no_topics_desc' => 'AI ile konu oluşturarak veya manuel ekleyerek başlayın.',
+    ],
+
+    // AI Providers
+    'ai' => [
+        'providers' => [
+            'openai' => 'OpenAI',
+            'claude' => 'Anthropic Claude',
+            'gemini' => 'Google Gemini',
+        ],
+        'select_provider' => 'Sağlayıcı Seçin',
+        'select_model' => 'Model Seçin',
+        'default_provider' => 'Varsayılan Sağlayıcı',
+        'test_connection' => 'Bağlantıyı Test Et',
+        'connection_success' => 'Bağlantı başarılı.',
+        'connection_failed' => 'Bağlantı başarısız.',
+    ],
+
+    // Common
+    'common' => [
+        'now' => 'şimdi',
+    ],
 ];

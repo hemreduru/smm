@@ -6,6 +6,7 @@ use App\Enums\ContentStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
 
 class Content extends Model
@@ -55,6 +56,14 @@ class Content extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Get the deliveries for this content.
+     */
+    public function deliveries(): HasMany
+    {
+        return $this->hasMany(ContentDelivery::class);
     }
 
     // ─── Scopes ────────────────────────────────────────────────────────

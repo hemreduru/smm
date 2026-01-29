@@ -297,4 +297,131 @@ return [
 
     // Content Management Section
     'content_management' => 'Content Management',
+
+    // Topics
+    'topics' => [
+        'title' => 'Topics',
+        'subtitle' => 'Manage your AI-generated topics and send them to n8n for processing.',
+        'create' => 'Create Topic',
+        'edit' => 'Edit Topic',
+        'view' => 'View Topic',
+        'delete' => 'Delete Topic',
+        'generate' => 'Generate with AI',
+        'generate_topics' => 'Generate Topics',
+        'manual_create' => 'Manual Create',
+
+        // Fields
+        'fields' => [
+            'title' => 'Title',
+            'description' => 'Description',
+            'niche' => 'Niche',
+            'keywords' => 'Keywords',
+            'status' => 'Status',
+            'ai_provider' => 'AI Provider',
+            'ai_model' => 'AI Model',
+            'scheduled_at' => 'Scheduled At',
+            'created_by' => 'Created By',
+            'sent_at' => 'Sent At',
+            'completed_at' => 'Completed At',
+        ],
+
+        // Placeholders
+        'placeholders' => [
+            'title' => 'Enter topic title',
+            'description' => 'Enter topic description',
+            'niche' => 'e.g., fitness, technology, cooking',
+            'keywords' => 'Enter keywords separated by commas',
+            'select_provider' => 'Select AI Provider',
+            'select_model' => 'Select AI Model',
+        ],
+
+        // Actions
+        'approve' => 'Approve',
+        'send_to_n8n' => 'Send to n8n',
+        'reset_to_draft' => 'Reset to Draft',
+        'retry' => 'Retry',
+
+        // Statuses
+        'statuses' => [
+            'draft' => 'Draft',
+            'approved' => 'Approved',
+            'sent_to_n8n' => 'Sent to n8n',
+            'processing' => 'Processing',
+            'completed' => 'Completed',
+            'failed' => 'Failed',
+        ],
+
+        // Messages
+        'list_success' => 'Topics retrieved successfully.',
+        'list_error' => 'Failed to retrieve topics.',
+        'not_found' => 'Topic not found.',
+        'found' => 'Topic found.',
+        'find_error' => 'Failed to find topic.',
+        'created' => 'Topic created successfully.',
+        'create_error' => 'Failed to create topic.',
+        'updated' => 'Topic updated successfully.',
+        'update_error' => 'Failed to update topic.',
+        'deleted' => 'Topic deleted successfully.',
+        'delete_error' => 'Failed to delete topic.',
+        'approved' => 'Topic approved successfully.',
+        'approve_error' => 'Failed to approve topic.',
+        'sent_to_n8n' => 'Topic sent to n8n successfully.',
+        'send_error' => 'Failed to send topic.',
+        'reset' => 'Topic reset to draft successfully.',
+        'reset_error' => 'Failed to reset topic.',
+
+        // Restrictions
+        'cannot_edit' => 'This topic cannot be edited.',
+        'cannot_delete' => 'This topic cannot be deleted.',
+        'cannot_approve' => 'This topic cannot be approved.',
+        'cannot_send' => 'This topic cannot be sent to n8n.',
+        'cannot_reset' => 'This topic cannot be reset.',
+
+        // AI
+        'ai_generation_failed' => 'AI topic generation failed: :error',
+        'ai_generation_error' => 'An error occurred during AI topic generation.',
+        'ai_generated' => ':count topics generated successfully.',
+        'n8n_send_failed' => 'Failed to send to n8n: :error',
+
+        // Validation
+        'validation' => [
+            'niche_required' => 'Niche is required for AI generation.',
+            'max_keywords' => 'Maximum 10 keywords are allowed.',
+            'invalid_provider' => 'Invalid AI provider selected.',
+        ],
+
+        // Stats
+        'stats' => [
+            'total' => 'Total Topics',
+            'draft' => 'Drafts',
+            'approved' => 'Approved',
+            'pending' => 'Pending',
+            'completed' => 'Completed',
+            'failed' => 'Failed',
+        ],
+
+        // Empty State
+        'no_topics' => 'No topics found.',
+        'no_topics_desc' => 'Start by generating topics with AI or create one manually.',
+    ],
+
+    // AI Providers
+    'ai' => [
+        'providers' => [
+            'openai' => 'OpenAI',
+            'claude' => 'Anthropic Claude',
+            'gemini' => 'Google Gemini',
+        ],
+        'select_provider' => 'Select Provider',
+        'select_model' => 'Select Model',
+        'default_provider' => 'Default Provider',
+        'test_connection' => 'Test Connection',
+        'connection_success' => 'Connection successful.',
+        'connection_failed' => 'Connection failed.',
+    ],
+
+    // Common
+    'common' => [
+        'now' => 'now',
+    ],
 ];
