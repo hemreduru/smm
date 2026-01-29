@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Core\Repositories\UserRepository;
-use App\Models\User;
-use App\Models\Role;
+use App\Core\Services\UserService;
 use App\Http\Requests\UpdateUserProfileRequest;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
     public function __construct(
-        protected UserRepository $userRepository
+        protected UserService $userService
     ) {}
 
     /**
@@ -26,7 +24,7 @@ class UserController extends Controller
     public function index(Request $request): View
     {
         $workspaceId = $request->user()->current_workspace_id;
-        $roles = Role::where('workspace_id', $workspaceId)->get();
+        $roles = $this->userService->getRolesForWorkspace($workspaceId);
 
         return view('users.index', compact('roles', 'workspaceId'));
     }
@@ -39,21 +37,14 @@ class UserController extends Controller
         $workspaceId = $request->user()->current_workspace_id;
         $currentUserId = $request->user()->id;
 
-        $users = User::select(['users.id', 'users.name', 'users.email', 'users.created_at'])
-            ->join('workspace_user', 'users.id', '=', 'workspace_user.user_id')
-            ->where('workspace_user.workspace_id', $workspaceId)
-            ->with(['workspaces' => function ($query) use ($workspaceId) {
-                $query->where('workspaces.id', $workspaceId);
-            }]);
+        $users = $this->userService->getUsersQueryForWorkspace($workspaceId);
 
         return DataTables::eloquent($users)
             ->addColumn('role', function ($user) use ($workspaceId) {
-                $pivot = $user->workspaces->first()?->pivot;
-                if ($pivot && $pivot->role_id) {
-                    $role = Role::find($pivot->role_id);
-                    return $role ? $role->name : '-';
-                }
-                return '-';
+                return $this->userService->getUserRoleInWorkspace($user, $workspaceId) ?? '-';
+            })
+            ->addColumn('is_owner', function ($user) use ($workspaceId) {
+                return $this->userService->isWorkspaceOwner($user, $workspaceId);
             })
             ->addColumn('actions', function ($user) use ($currentUserId, $workspaceId) {
                 $isCurrentUser = $user->id === $currentUserId;
@@ -81,12 +72,13 @@ class UserController extends Controller
     /**
      * Update user profile.
      */
-    public function updateProfile(UpdateUserProfileRequest $request): RedirectResponse
+    public function updateProfile(UpdateUserProfileRequest $request): Response
     {
-        $user = $request->user();
+        $result = $this->userService->updateProfile(
+            $request->user(),
+            $request->validated()
+        );
 
-        $user->update($request->validated());
-
-        return back()->with('success', __('messages.profile_updated'));
+        return $result->toResponse($request);
     }
 }

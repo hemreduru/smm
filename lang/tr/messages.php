@@ -177,6 +177,15 @@ return [
     'entries' => 'kayıt',
     'no_records' => 'Kayıt bulunamadı.',
     'loading' => 'Yükleniyor...',
+    'no_records_found' => 'Kayıt bulunamadı.',
+    'no_matching_records' => 'Eşleşen kayıt bulunamadı.',
+    'datatable_load_error' => 'Veri yüklenemedi. Lütfen tekrar deneyin.',
+    'accounts' => 'hesap',
+    'inactive' => 'Pasif',
+    'reset' => 'Sıfırla',
+    'select_role' => 'Rol seçin',
+    'unauthorized_action' => 'Bu işlemi yapmaya yetkiniz yok.',
+    'only_owner_can_delete_workspace' => 'Bu çalışma alanını sadece sahibi silebilir.',
 
     // Form Validation
     'field_required' => 'Bu alan zorunludur.',

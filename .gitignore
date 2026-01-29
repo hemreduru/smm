@@ -16,7 +16,7 @@ Thumbs.db
 /storage/*.key
 /storage/pail
 /vendor
-
+TASKS.md
 .env
 .env.backup
 .env.production

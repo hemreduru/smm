@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Core\Services\AccountGroupService;
 use App\Core\Services\PlatformAccountService;
+use App\Http\Requests\DeleteAccountGroupRequest;
 use App\Http\Requests\StoreAccountGroupRequest;
 use App\Http\Requests\UpdateAccountGroupRequest;
 use App\Models\AccountGroup;
@@ -14,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class AccountGroupController extends Controller
@@ -123,15 +125,11 @@ class AccountGroupController extends Controller
     /**
      * Remove the specified account group.
      */
-    public function destroy(AccountGroup $group): RedirectResponse
+    public function destroy(DeleteAccountGroupRequest $request, AccountGroup $group): Response
     {
-        $this->authorizeWorkspace($group);
-
         $result = $this->groupService->deleteGroup($group);
 
-        return redirect()
-            ->route('groups.index')
-            ->with('result', $result->toArray());
+        return $result->toResponse($request);
     }
 
     /**

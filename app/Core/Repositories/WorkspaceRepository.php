@@ -4,14 +4,64 @@ declare(strict_types=1);
 
 namespace App\Core\Repositories;
 
+use App\Models\Role;
 use App\Models\Workspace;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 
 class WorkspaceRepository extends BaseRepository
 {
     public function __construct(Workspace $model)
     {
         parent::__construct($model);
+    }
+
+    /**
+     * Create a new workspace.
+     */
+    public function createWorkspace(string $name, int $ownerId): Workspace
+    {
+        return Workspace::create([
+            'name' => $name,
+            'slug' => Str::slug($name) . '-' . uniqid(),
+            'owner_id' => $ownerId,
+        ]);
+    }
+
+    /**
+     * Create a role for workspace.
+     */
+    public function createRole(int $workspaceId, string $name, string $slug): Role
+    {
+        return Role::create([
+            'workspace_id' => $workspaceId,
+            'name' => $name,
+            'slug' => $slug,
+        ]);
+    }
+
+    /**
+     * Create default roles for workspace.
+     * 
+     * @return array{admin: Role, editor: Role, viewer: Role}
+     */
+    public function createDefaultRoles(int $workspaceId): array
+    {
+        return [
+            'admin' => $this->createRole($workspaceId, 'Admin', 'admin'),
+            'editor' => $this->createRole($workspaceId, 'Editor', 'editor'),
+            'viewer' => $this->createRole($workspaceId, 'Viewer', 'viewer'),
+        ];
+    }
+
+    /**
+     * Get role by workspace and slug.
+     */
+    public function getRoleBySlug(int $workspaceId, string $slug): ?Role
+    {
+        return Role::where('workspace_id', $workspaceId)
+            ->where('slug', $slug)
+            ->first();
     }
 
     /**

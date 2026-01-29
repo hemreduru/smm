@@ -17,12 +17,6 @@
             <li class="breadcrumb-item text-muted">{{ __('messages.connected_accounts') }}</li>
         </ul>
     </div>
-    <div class="d-flex align-items-center gap-2 gap-lg-3">
-        <a href="{{ route('accounts.create') }}" class="btn btn-sm fw-bold btn-primary">
-            <i class="bi bi-plus-lg fs-4 me-1"></i>
-            {{ __('messages.connect_account') }}
-        </a>
-    </div>
 @endsection
 
 @section('content')
@@ -66,34 +60,40 @@
                 </div>
             </div>
             <div class="card-toolbar">
-                <div class="d-flex justify-content-end" data-table-toolbar="base">
-                    <button type="button" class="btn btn-light-primary me-3" data-filter-menu="true">
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light-primary" data-filter-menu="true">
                         <i class="bi bi-funnel fs-4 me-2"></i>
                         {{ __('messages.filter') }}
                     </button>
+                    <a href="{{ route('accounts.create') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-lg fs-4 me-1"></i>
+                        {{ __('messages.connect_account') }}
+                    </a>
                 </div>
             </div>
         </div>
 
         <div class="card-body pt-0">
-            <table class="table align-middle table-row-dashed fs-6 gy-5" id="accounts-table">
-                <thead>
-                    <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                        <th class="w-10px pe-2">
-                            <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
-                                <input class="form-check-input" type="checkbox" data-check-all="true" value="1"/>
-                            </div>
-                        </th>
-                        <th class="min-w-125px">{{ __('messages.platform') }}</th>
-                        <th class="min-w-150px">{{ __('messages.username') }}</th>
-                        <th class="min-w-100px">{{ __('messages.status') }}</th>
-                        <th class="min-w-100px">{{ __('messages.last_synced') }}</th>
-                        <th class="text-end min-w-100px">{{ __('messages.actions') }}</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-600 fw-semibold">
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table align-middle table-row-dashed fs-6 gy-5" id="accounts-table">
+                    <thead>
+                        <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                            <th class="w-10px pe-2">
+                                <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+                                    <input class="form-check-input" type="checkbox" data-check-all="true" value="1"/>
+                                </div>
+                            </th>
+                            <th class="min-w-100px">{{ __('messages.platform') }}</th>
+                            <th class="min-w-150px">{{ __('messages.username') }}</th>
+                            <th class="min-w-100px">{{ __('messages.status') }}</th>
+                            <th class="min-w-100px">{{ __('messages.last_synced') }}</th>
+                            <th class="text-end min-w-100px">{{ __('messages.actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 fw-semibold">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 @endsection
@@ -102,11 +102,18 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const table = $('#accounts-table').DataTable({
+        responsive: true,
         processing: true,
         serverSide: false,
         ajax: {
             url: '{{ route('accounts.data') }}',
-            dataSrc: 'data'
+            dataSrc: 'data',
+            error: function(xhr, error, thrown) {
+                console.error('DataTables error:', error);
+                if (typeof window.showError === 'function') {
+                    window.showError('{{ __('messages.datatable_load_error') }}');
+                }
+            }
         },
         columns: [
             {
@@ -168,15 +175,19 @@ document.addEventListener('DOMContentLoaded', function() {
         ],
         order: [[1, 'asc']],
         language: {
-            processing: '<span class="spinner-border spinner-border-sm align-middle"></span> {{ __('messages.loading') }}'
+            processing: '<span class="spinner-border spinner-border-sm align-middle"></span> {{ __('messages.loading') }}',
+            emptyTable: '{{ __('messages.no_records_found') }}',
+            zeroRecords: '{{ __('messages.no_matching_records') }}'
         }
     });
 
     // Search handler
     const searchInput = document.querySelector('[data-table-filter="search"]');
-    searchInput.addEventListener('keyup', function() {
-        table.search(this.value).draw();
-    });
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            table.search(this.value).draw();
+        });
+    }
 });
 </script>
 @endpush

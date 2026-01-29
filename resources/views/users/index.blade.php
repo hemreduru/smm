@@ -1,5 +1,24 @@
 @extends('layouts.app')
 
+@section('title', __('messages.users'))
+
+@section('toolbar')
+    <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+        <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">
+            {{ __('messages.users') }}
+        </h1>
+        <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+            <li class="breadcrumb-item text-muted">
+                <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">{{ __('messages.dashboard') }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <span class="bullet bg-gray-500 w-5px h-2px"></span>
+            </li>
+            <li class="breadcrumb-item text-muted">{{ __('messages.users') }}</li>
+        </ul>
+    </div>
+@endsection
+
 @section('content')
 <div class="card">
     <div class="card-header border-0 pt-6">
@@ -10,20 +29,20 @@
             </div>
         </div>
         <div class="card-toolbar">
-            <div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
+            <div class="d-flex justify-content-end gap-2" data-kt-user-table-toolbar="base">
                 {{-- Filter Dropdown --}}
-                <button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                    <i class="bi bi-funnel me-1"></i>{{ __('messages.filter') ?? 'Filter' }}
+                <button type="button" class="btn btn-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                    <i class="bi bi-funnel me-1"></i>{{ __('messages.filter') }}
                 </button>
                 <div class="menu menu-sub menu-sub-dropdown w-300px w-md-325px" data-kt-menu="true">
                     <div class="px-7 py-5">
-                        <div class="fs-5 text-dark fw-bold">{{ __('messages.filter_options') ?? 'Filter Options' }}</div>
+                        <div class="fs-5 text-dark fw-bold">{{ __('messages.filter_options') }}</div>
                     </div>
                     <div class="separator border-gray-200"></div>
                     <div class="px-7 py-5">
                         <div class="mb-10">
                             <label class="form-label fw-semibold">{{ __('messages.role') }}:</label>
-                            <select class="form-select form-select-solid" data-kt-select2="true" data-placeholder="Select role" data-allow-clear="true" id="role-filter">
+                            <select class="form-select form-select-solid" data-kt-select2="true" data-placeholder="{{ __('messages.select_role') }}" data-allow-clear="true" id="role-filter">
                                 <option></option>
                                 @foreach($roles as $role)
                                     <option value="{{ $role->id }}">{{ $role->name }}</option>
@@ -31,8 +50,8 @@
                             </select>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button type="reset" class="btn btn-light btn-active-light-primary fw-semibold me-2 px-6" data-kt-menu-dismiss="true">{{ __('messages.cancel') }}</button>
-                            <button type="submit" class="btn btn-primary fw-semibold px-6" data-kt-menu-dismiss="true" id="apply-filter">{{ __('messages.apply') ?? 'Apply' }}</button>
+                            <button type="reset" class="btn btn-light btn-active-light-primary fw-semibold me-2 px-6" data-kt-menu-dismiss="true">{{ __('messages.reset') }}</button>
+                            <button type="submit" class="btn btn-primary fw-semibold px-6" data-kt-menu-dismiss="true" id="apply-filter">{{ __('messages.apply') }}</button>
                         </div>
                     </div>
                 </div>
@@ -45,19 +64,21 @@
         </div>
     </div>
     <div class="card-body pt-0">
-        <table id="users-table" class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-            <thead>
-                <tr class="fw-bold text-muted bg-light">
-                    <th class="ps-4 min-w-300px rounded-start">{{ __('messages.name') }}</th>
-                    <th class="min-w-125px">{{ __('messages.role') }}</th>
-                    <th class="min-w-125px">{{ __('messages.status') ?? 'Status' }}</th>
-                    <th class="min-w-150px">{{ __('messages.joined_at') }}</th>
-                    <th class="min-w-100px text-end rounded-end pe-4">{{ __('messages.actions') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table id="users-table" class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                <thead>
+                    <tr class="fw-bold text-muted bg-light text-uppercase">
+                        <th class="ps-4 min-w-200px rounded-start">{{ __('messages.name') }}</th>
+                        <th class="min-w-100px">{{ __('messages.role') }}</th>
+                        <th class="min-w-100px">{{ __('messages.status') }}</th>
+                        <th class="min-w-125px">{{ __('messages.joined_at') }}</th>
+                        <th class="min-w-100px text-end rounded-end pe-4">{{ __('messages.actions') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -76,7 +97,7 @@
                 <div class="modal-body">
                     <div class="mb-5">
                         <label class="form-label required">{{ __('messages.email') }}</label>
-                        <input type="email" class="form-control form-control-solid" name="email" required placeholder="{{ __('messages.email_placeholder') ?? 'Enter email address' }}">
+                        <input type="email" class="form-control form-control-solid" name="email" required placeholder="{{ __('messages.email_placeholder') }}">
                     </div>
                     <div class="mb-5">
                         <label class="form-label required">{{ __('messages.role') }}</label>
@@ -103,12 +124,19 @@
 <script>
 $(document).ready(function() {
     let table = $('#users-table').DataTable({
+        responsive: true,
         processing: true,
         serverSide: true,
         ajax: {
             url: '{{ route("users.data") }}',
             data: function(d) {
                 d.role_id = $('#role-filter').val();
+            },
+            error: function(xhr, error, thrown) {
+                console.error('DataTables error:', error);
+                if (typeof window.showError === 'function') {
+                    window.showError('{{ __('messages.datatable_load_error') }}');
+                }
             }
         },
         columns: [
@@ -173,7 +201,9 @@ $(document).ready(function() {
             }
         ],
         language: {
-            url: '{{ app()->getLocale() === "tr" ? "//cdn.datatables.net/plug-ins/1.13.7/i18n/tr.json" : "" }}'
+            url: '{{ app()->getLocale() === "tr" ? "//cdn.datatables.net/plug-ins/1.13.7/i18n/tr.json" : "" }}',
+            emptyTable: '{{ __('messages.no_records_found') }}',
+            zeroRecords: '{{ __('messages.no_matching_records') }}'
         },
         dom: 'rt<"row align-items-center"<"col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start"li><"col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end"p>>',
         pageLength: 10,

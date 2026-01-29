@@ -177,6 +177,15 @@ return [
     'entries' => 'entries',
     'no_records' => 'No records found.',
     'loading' => 'Loading...',
+    'no_records_found' => 'No records found.',
+    'no_matching_records' => 'No matching records found.',
+    'datatable_load_error' => 'Failed to load data. Please try again.',
+    'accounts' => 'accounts',
+    'inactive' => 'Inactive',
+    'reset' => 'Reset',
+    'select_role' => 'Select role',
+    'unauthorized_action' => 'You are not authorized to perform this action.',
+    'only_owner_can_delete_workspace' => 'Only the workspace owner can delete this workspace.',
 
     // Form Validation
     'field_required' => 'This field is required.',

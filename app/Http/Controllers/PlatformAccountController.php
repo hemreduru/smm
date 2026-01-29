@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Core\Services\PlatformAccountService;
 use App\Enums\Platform;
+use App\Http\Requests\DeletePlatformAccountRequest;
 use App\Http\Requests\StorePlatformAccountRequest;
 use App\Http\Requests\UpdatePlatformAccountRequest;
 use App\Models\PlatformAccount;
@@ -14,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class PlatformAccountController extends Controller
@@ -120,15 +122,11 @@ class PlatformAccountController extends Controller
     /**
      * Disconnect (remove) the specified platform account.
      */
-    public function destroy(PlatformAccount $account): RedirectResponse
+    public function destroy(DeletePlatformAccountRequest $request, PlatformAccount $account): Response
     {
-        $this->authorizeWorkspace($account);
-
         $result = $this->accountService->disconnectAccount($account);
 
-        return redirect()
-            ->route('accounts.index')
-            ->with('result', $result->toArray());
+        return $result->toResponse($request);
     }
 
     /**

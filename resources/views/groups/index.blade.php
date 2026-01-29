@@ -17,12 +17,6 @@
             <li class="breadcrumb-item text-muted">{{ __('messages.account_groups') }}</li>
         </ul>
     </div>
-    <div class="d-flex align-items-center gap-2 gap-lg-3">
-        <a href="{{ route('groups.create') }}" class="btn btn-sm fw-bold btn-primary">
-            <i class="bi bi-plus-lg fs-4 me-1"></i>
-            {{ __('messages.create_group') }}
-        </a>
-    </div>
 @endsection
 
 @section('content')
@@ -51,22 +45,30 @@
                            placeholder="{{ __('messages.search') }}..."/>
                 </div>
             </div>
+            <div class="card-toolbar">
+                <a href="{{ route('groups.create') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg fs-4 me-1"></i>
+                    {{ __('messages.create_group') }}
+                </a>
+            </div>
         </div>
 
         <div class="card-body pt-0">
-            <table class="table align-middle table-row-dashed fs-6 gy-5" id="groups-table">
-                <thead>
-                    <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                        <th class="min-w-200px">{{ __('messages.group_name') }}</th>
-                        <th class="min-w-150px">{{ __('messages.group_accounts') }}</th>
-                        <th class="min-w-100px">{{ __('messages.status') }}</th>
-                        <th class="min-w-100px">{{ __('messages.created_at') }}</th>
-                        <th class="text-end min-w-100px">{{ __('messages.actions') }}</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-600 fw-semibold">
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table class="table align-middle table-row-dashed fs-6 gy-5" id="groups-table">
+                    <thead>
+                        <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                            <th class="min-w-150px">{{ __('messages.group_name') }}</th>
+                            <th class="min-w-125px">{{ __('messages.group_accounts') }}</th>
+                            <th class="min-w-80px">{{ __('messages.status') }}</th>
+                            <th class="min-w-100px">{{ __('messages.created_at') }}</th>
+                            <th class="text-end min-w-100px">{{ __('messages.actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 fw-semibold">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 @endsection
@@ -75,11 +77,18 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const table = $('#groups-table').DataTable({
+        responsive: true,
         processing: true,
         serverSide: false,
         ajax: {
             url: '{{ route('groups.data') }}',
-            dataSrc: 'data'
+            dataSrc: 'data',
+            error: function(xhr, error, thrown) {
+                console.error('DataTables error:', error);
+                if (typeof window.showError === 'function') {
+                    window.showError('{{ __('messages.datatable_load_error') }}');
+                }
+            }
         },
         columns: [
             {
@@ -111,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         return `<span class="badge badge-light me-1"><i class="bi ${icons[p] || 'bi-globe'}"></i></span>`;
                     }).join('');
                     return `<div class="d-flex align-items-center">
-                        <span class="badge badge-light-primary me-2">${data.accounts_count} accounts</span>
+                        <span class="badge badge-light-primary me-2">${data.accounts_count} {{ __('messages.accounts') }}</span>
                         ${badges}
                     </div>`;
                 }
@@ -120,8 +129,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 data: null,
                 render: function(data) {
                     return data.status
-                        ? '<span class="badge badge-light-success">Active</span>'
-                        : '<span class="badge badge-light-secondary">Inactive</span>';
+                        ? '<span class="badge badge-light-success">{{ __('messages.active') }}</span>'
+                        : '<span class="badge badge-light-secondary">{{ __('messages.inactive') }}</span>';
                 }
             },
             {
@@ -137,15 +146,19 @@ document.addEventListener('DOMContentLoaded', function() {
         ],
         order: [[0, 'asc']],
         language: {
-            processing: '<span class="spinner-border spinner-border-sm align-middle"></span> {{ __('messages.loading') }}'
+            processing: '<span class="spinner-border spinner-border-sm align-middle"></span> {{ __('messages.loading') }}',
+            emptyTable: '{{ __('messages.no_records_found') }}',
+            zeroRecords: '{{ __('messages.no_matching_records') }}'
         }
     });
 
     // Search handler
     const searchInput = document.querySelector('[data-table-filter="search"]');
-    searchInput.addEventListener('keyup', function() {
-        table.search(this.value).draw();
-    });
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            table.search(this.value).draw();
+        });
+    }
 });
 </script>
 @endpush

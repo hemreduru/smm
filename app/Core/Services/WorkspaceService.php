@@ -10,11 +10,10 @@ use App\Core\Results\BaseResult;
 use App\Core\Results\SuccessResult;
 use App\Core\Results\FailResult;
 use App\Core\Results\ServerErrorResult;
-use App\Models\Workspace;
 use App\Models\Role;
+use App\Models\Workspace;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class WorkspaceService extends BaseService
 {
@@ -47,38 +46,18 @@ class WorkspaceService extends BaseService
         DB::beginTransaction();
 
         try {
-            $workspace = Workspace::create([
-                'name' => $data['name'],
-                'slug' => Str::slug($data['name']) . '-' . uniqid(),
-                'owner_id' => $ownerId,
-            ]);
+            // Create workspace via repository
+            $workspace = $this->workspaceRepository->createWorkspace($data['name'], $ownerId);
 
-            // Create default Admin role for workspace
-            $adminRole = Role::create([
-                'workspace_id' => $workspace->id,
-                'name' => 'Admin',
-                'slug' => 'admin',
-            ]);
-
-            // Create Editor and Viewer roles
-            Role::create([
-                'workspace_id' => $workspace->id,
-                'name' => 'Editor',
-                'slug' => 'editor',
-            ]);
-
-            Role::create([
-                'workspace_id' => $workspace->id,
-                'name' => 'Viewer',
-                'slug' => 'viewer',
-            ]);
+            // Create default roles via repository
+            $roles = $this->workspaceRepository->createDefaultRoles($workspace->id);
 
             // Add owner as admin
-            $this->workspaceRepository->addUser($workspace->id, $ownerId, $adminRole->id);
+            $this->workspaceRepository->addUser($workspace->id, $ownerId, $roles['admin']->id);
 
             DB::commit();
 
-            Log::info("WorkspaceService: Create - User: {$ownerId} created workspace: {$workspace->id}");
+            Log::info("[WorkspaceModule] Created - User: {$ownerId} - Workspace: {$workspace->id}");
 
             return new SuccessResult(
                 __('messages.workspace_created'),
@@ -87,7 +66,7 @@ class WorkspaceService extends BaseService
             );
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("WorkspaceService: Create failed - User: {$ownerId} - {$e->getMessage()}");
+            Log::error("[WorkspaceModule] Create failed - User: {$ownerId} - Error: {$e->getMessage()}");
 
             return new ServerErrorResult(__('messages.server_error'));
         }
@@ -114,12 +93,12 @@ class WorkspaceService extends BaseService
 
             DB::commit();
 
-            Log::info("WorkspaceService: Update - User: {$userId} updated workspace: {$workspaceId}");
+            Log::info("[WorkspaceModule] Updated - User: {$userId} - Workspace: {$workspaceId}");
 
             return new SuccessResult(__('messages.workspace_updated'), ['workspace' => $workspace]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("WorkspaceService: Update failed - {$e->getMessage()}");
+            Log::error("[WorkspaceModule] Update failed - User: {$userId} - Workspace: {$workspaceId} - Error: {$e->getMessage()}");
 
             return new ServerErrorResult(__('messages.server_error'));
         }
@@ -143,12 +122,12 @@ class WorkspaceService extends BaseService
 
             DB::commit();
 
-            Log::info("WorkspaceService: Delete - User: {$userId} deleted workspace: {$workspaceId}");
+            Log::info("[WorkspaceModule] Deleted - User: {$userId} - Workspace: {$workspaceId}");
 
             return new SuccessResult(__('messages.workspace_deleted'), null, route('dashboard'));
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("WorkspaceService: Delete failed - {$e->getMessage()}");
+            Log::error("[WorkspaceModule] Delete failed - User: {$userId} - Workspace: {$workspaceId} - Error: {$e->getMessage()}");
 
             return new ServerErrorResult(__('messages.server_error'));
         }
@@ -167,11 +146,11 @@ class WorkspaceService extends BaseService
 
             $this->userRepository->switchWorkspace($userId, $workspaceId);
 
-            Log::info("WorkspaceService: Switch - User: {$userId} switched to workspace: {$workspaceId}");
+            Log::info("[WorkspaceModule] Switched - User: {$userId} - Workspace: {$workspaceId}");
 
             return new SuccessResult(__('messages.workspace_switched'));
         } catch (\Exception $e) {
-            Log::error("WorkspaceService: Switch failed - {$e->getMessage()}");
+            Log::error("[WorkspaceModule] Switch failed - User: {$userId} - Workspace: {$workspaceId} - Error: {$e->getMessage()}");
 
             return new ServerErrorResult(__('messages.server_error'));
         }
@@ -209,12 +188,12 @@ class WorkspaceService extends BaseService
 
             DB::commit();
 
-            Log::info("WorkspaceService: Invite - User: {$inviterId} invited user: {$user->id} to workspace: {$workspaceId}");
+            Log::info("[WorkspaceModule] Invited - Inviter: {$inviterId} - Invitee: {$user->id} - Workspace: {$workspaceId}");
 
             return new SuccessResult(__('messages.user_invited'));
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("WorkspaceService: Invite failed - {$e->getMessage()}");
+            Log::error("[WorkspaceModule] Invite failed - Inviter: {$inviterId} - Workspace: {$workspaceId} - Error: {$e->getMessage()}");
 
             return new ServerErrorResult(__('messages.server_error'));
         }
@@ -250,12 +229,12 @@ class WorkspaceService extends BaseService
 
             DB::commit();
 
-            Log::info("WorkspaceService: Remove - User: {$removerId} removed user: {$userId} from workspace: {$workspaceId}");
+            Log::info("[WorkspaceModule] Removed - Remover: {$removerId} - Removed: {$userId} - Workspace: {$workspaceId}");
 
             return new SuccessResult(__('messages.user_removed'));
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("WorkspaceService: Remove failed - {$e->getMessage()}");
+            Log::error("[WorkspaceModule] Remove failed - Remover: {$removerId} - Workspace: {$workspaceId} - Error: {$e->getMessage()}");
 
             return new ServerErrorResult(__('messages.server_error'));
         }
@@ -288,12 +267,12 @@ class WorkspaceService extends BaseService
 
             DB::commit();
 
-            Log::info("WorkspaceService: UpdateRole - User: {$updaterId} updated role of user: {$userId} in workspace: {$workspaceId}");
+            Log::info("[WorkspaceModule] Role updated - Updater: {$updaterId} - User: {$userId} - Workspace: {$workspaceId}");
 
             return new SuccessResult(__('messages.role_updated'));
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("WorkspaceService: UpdateRole failed - {$e->getMessage()}");
+            Log::error("[WorkspaceModule] Role update failed - Updater: {$updaterId} - Workspace: {$workspaceId} - Error: {$e->getMessage()}");
 
             return new ServerErrorResult(__('messages.server_error'));
         }
